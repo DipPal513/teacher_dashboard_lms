@@ -37,7 +37,7 @@ export default function SideMenu() {
         <Sidebar
           breakPoint="lg"
           width="270px"
-          className="h-full sidebar_menu pt-24"
+          className="h-full sidebar_menu pt-20"
           collapsedWidth="80px"
           style={{ backgroundColor: "#fff", color: "#000" }}
         >

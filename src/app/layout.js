@@ -34,7 +34,7 @@ export default function RootLayout({ children }) {
         
 
           {/* Main Content */}
-          <main className="flex-1 p-6 overflow-y-auto bg-white shadow-md">
+          <main className="flex-1 mt-20 md:p-6 overflow-y-auto bg-[#F8F9FA] shadow-md">
             {children}
           </main>
         </div>

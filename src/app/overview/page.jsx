@@ -1,84 +1,117 @@
-import React from "react";
-import { FaHome, FaSearch, FaListAlt, FaMoneyBill, FaFileInvoice } from "react-icons/fa";
+"use client";
+import React, { useState } from "react";
+import { Table, Button, Input, Menu, Dropdown } from "antd";
+import { EllipsisOutlined } from "@ant-design/icons";
 
-const Dashboard = () => {
+const initialData = [
+  {
+    key: "1",
+    trxId: "123456",
+    merchantTrxId: "654321",
+    amount: 100,
+    ratio: 1.2,
+    charge: 5,
+    receivedAmount: 95,
+    payType: "Credit Card",
+    bankTrxId: "789012",
+    payeeName: "John Doe",
+    status: "Completed",
+  },
+  {
+    key: "1",
+    trxId: "123456",
+    merchantTrxId: "654321",
+    amount: 100,
+    ratio: 1.2,
+    charge: 5,
+    receivedAmount: 95,
+    payType: "Credit Card",
+    bankTrxId: "789012",
+    payeeName: "John Doe",
+    status: "Completed",
+  },
+  {
+    key: "1",
+    trxId: "123456",
+    merchantTrxId: "654321",
+    amount: 100,
+    ratio: 1.2,
+    charge: 5,
+    receivedAmount: 95,
+    payType: "Credit Card",
+    bankTrxId: "789012",
+    payeeName: "John Doe",
+    status: "Completed",
+  },
+  // Add more demo data here
+];
+
+const columns = [
+  { title: "Trx ID", dataIndex: "trxId", key: "trxId" },
+  {
+    title: "Merchant Trx ID",
+    dataIndex: "merchantTrxId",
+    key: "merchantTrxId",
+  },
+  { title: "Amount", dataIndex: "amount", key: "amount" },
+  { title: "Ratio", dataIndex: "ratio", key: "ratio" },
+  { title: "Charge", dataIndex: "charge", key: "charge" },
+  {
+    title: "Received Amount",
+    dataIndex: "receivedAmount",
+    key: "receivedAmount",
+  },
+  { title: "Pay Type", dataIndex: "payType", key: "payType" },
+  { title: "Bank Trx ID", dataIndex: "bankTrxId", key: "bankTrxId" },
+  { title: "Payee Name", dataIndex: "payeeName", key: "payeeName" },
+  { title: "Status", dataIndex: "status", key: "status" },
+  {
+    title: "Action",
+    key: "action",
+    render: () => (
+      <Dropdown
+        overlay={
+          <Menu>
+            <Menu.Item key="1">Option 1</Menu.Item>
+            <Menu.Item key="2">Option 2</Menu.Item>
+          </Menu>
+        }
+      >
+        <EllipsisOutlined />
+      </Dropdown>
+    ),
+  },
+  { title: "Refund", dataIndex: "refund", key: "refund" },
+];
+
+export default function Page() {
+  const [data, setData] = useState(initialData);
+
   return (
-    <div className="flex min-h-screen bg-gray-100">
-   
-      {/* Main Content */}
-      <div className="flex-1 p-6">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Transactions Summary</h2>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg">Refresh</button>
+    <div className="p-4 bg-white w-full">
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+          marginBottom: 16,
+        }}
+        className="header-container"
+      >
+        <div>
+          <h2 className="mb-3">Table Name</h2>
+          <Input.Search
+            placeholder="Search..."
+            className="mb-4"
+            style={{ width: "100%", maxWidth: 300 }}
+          />
         </div>
-
-        {/* Notification Banner */}
-        <div className="p-4 mb-6 bg-yellow-200 text-yellow-800 rounded-lg">
-          Payment Gateway SMS notifications are currently under maintenance. We apologize for the inconvenience.
-        </div>
-
-        {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <div className="flex items-center">
-              <div className="bg-red-100 text-red-500 p-4 rounded-full">
-                <FaListAlt size={24} />
-              </div>
-              <div className="ml-4">
-                <p className="text-gray-500">Today's Total Transaction</p>
-                <p className="text-lg font-bold">0.00 ৳</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <div className="flex items-center">
-              <div className="bg-green-100 text-green-500 p-4 rounded-full">
-                <FaListAlt size={24} />
-              </div>
-              <div className="ml-4">
-                <p className="text-gray-500">Yesterday's Total Transaction</p>
-                <p className="text-lg font-bold">0.00 ৳</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <div className="flex items-center">
-              <div className="bg-orange-100 text-orange-500 p-4 rounded-full">
-                <FaListAlt size={24} />
-              </div>
-              <div className="ml-4">
-                <p className="text-gray-500">Current Month Total Transaction</p>
-                <p className="text-lg font-bold">275.00 ৳</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <div className="flex items-center">
-              <div className="bg-blue-100 text-blue-500 p-4 rounded-full">
-                <FaListAlt size={24} />
-              </div>
-              <div className="ml-4">
-                <p className="text-gray-500">Previous Month Total Transaction</p>
-                <p className="text-lg font-bold">199485.60 ৳</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="mt-8">
-          <h3 className="text-xl font-bold">Quick Actions</h3>
-          <div className="mt-4">
-            <button className="bg-green-100 text-green-600 px-4 py-2 rounded-lg flex items-center">
-              <FaFileInvoice className="mr-2" />
-              Invoice Generator
-            </button>
-          </div>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+          <Button type="primary">Add</Button>
+          <Button>Export</Button>
         </div>
       </div>
+      <Table columns={columns} dataSource={data} scroll={{ x: true }} />
     </div>
   );
-};
-
-export default Dashboard;
+}

@@ -2,9 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 /* sidebar */
 
 
 .sidebar_menu{
     left: 0px !important;
+}
+
+/* antd */
+td.ant-table-cell,th{
+    padding: 5px 5px !important;
+    }
+ul.ant-dropdown-menu{
+    box-shadow: none !important;
 }
