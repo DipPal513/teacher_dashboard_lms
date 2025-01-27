@@ -1,0 +1,1 @@
+export const base_url = "https://mislms_api.bdbooknews.com/v1";

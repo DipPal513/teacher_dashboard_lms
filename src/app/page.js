@@ -1,29 +1,22 @@
 "use client";
-import React from 'react'
 
-import { Layout, Menu, Breadcrumb, Card, Row, Col } from 'antd';
-
-
-const DashboardWelcome = () => {
-  const { Header, Content, Footer, Sider } = Layout;
-
-  return (
-    <Layout style={{ minHeight: '100vh' }}>
-      
-      <Layout className="site-layout">
-      
-        <Content style={{ margin: '0 16px' }}>
-          <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item>Dashboard</Breadcrumb.Item>
-            <Breadcrumb.Item>Welcome</Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">Welcome to the Dashboard</h1>
-            <p className="text-lg text-gray-600">Manage your courses and students efficiently.</p>
-          </div>
-        </Content>
-      </Layout>
-    </Layout>
-  );
+const InfoPage = () => {
+    return (
+        <div className="flex flex-col min-h-screen">
+            <header className="bg-white p-4 shadow">
+                <h1 className="text-4xl font-bold text-gray-800 mb-4">Information Page</h1>
+            </header>
+            <main className="flex-grow p-4">
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                    <h2 className="text-3xl font-bold text-gray-800 mb-4">Responsive Info Page</h2>
+                    <p className="text-lg text-gray-600">This is a responsive information page with a banner header.</p>
+                </div>
+            </main>
+            <footer className="bg-white p-4 text-center">
+                Info Page ©2023 Created by YourName
+            </footer>
+        </div>
+    );
 };
-export default DashboardWelcome;
+
+export default InfoPage;

@@ -1,31 +1,67 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
+import Cookies from "js-cookie";
+import Link from "next/link";
+import { base_url } from "@/utils/URL";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post(base_url + "/clients/web/login", data, {
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
 
-    // Add validation logic
-    if (!email || !password) {
-      setError("Please fill in all fields.");
-      return;
+      const result = response.data;
+
+      // Handle success
+      if (response.status === 200) {
+        reset();
+        console.log(result)
+        Cookies.set("token", result.data.access_token, {
+          expires: result.expires_in / 86400, // Convert seconds to days
+        });
+        toast.success("Login successful!");
+        router.push('/dashboard')
+
+        // Clear input fields using react-hook-form reset method
+        
+
+        // Optional: Redirect to another page
+        // window.location.href = "/dashboard";
+      }
+    } catch (error) {
+      reset();
+      // Handle error
+      if (error.response) {
+        // Error from server
+        toast.error(error.response.data.message || "Login failed.");
+      } else {
+        // Network or other errors
+        console.log(error);
+        toast.error("Invalid Credentials try again.");
+      }
     }
-
-    // Simulated API call
-    setError(""); // Clear error
-    console.log("Email:", email, "Password:", password);
-
-    // You can redirect or show a success message
-    alert("Login Successful!");
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br">
+      <Toaster position="top-right" reverseOrder={false} />
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-6">
@@ -34,29 +70,34 @@ export default function LoginPage() {
             alt="Logo"
             className="h-20 mx-auto rounded-full"
           />
-          <h1 className="text-2xl font-bold text-gray-800 mt-2">Welcome Back!</h1>
+          <h1 className="text-2xl font-bold text-gray-800 mt-2">
+            Welcome Back!
+          </h1>
           <p className="text-gray-600">Login to your account</p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Email Field */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* email Field */}
           <div>
             <label
               htmlFor="email"
               className="block text-sm font-medium text-gray-700"
             >
-              Email Address
+              email
             </label>
             <input
               id="email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...register("email", { required: "email is required" })}
               placeholder="Enter your email"
               className="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              required
             />
+            {errors.email && (
+              <div className="text-sm text-red-600 bg-red-100 p-2 rounded-lg">
+                {errors.email.message}
+              </div>
+            )}
           </div>
 
           {/* Password Field */}
@@ -70,20 +111,16 @@ export default function LoginPage() {
             <input
               id="password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              {...register("password", { required: "Password is required" })}
               placeholder="Enter your password"
               className="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              required
             />
+            {errors.password && (
+              <div className="text-sm text-red-600 bg-red-100 p-2 rounded-lg">
+                {errors.password.message}
+              </div>
+            )}
           </div>
-
-          {/* Error Message */}
-          {error && (
-            <div className="text-sm text-red-600 bg-red-100 p-2 rounded-lg">
-              {error}
-            </div>
-          )}
 
           {/* Submit Button */}
           <button
@@ -97,12 +134,9 @@ export default function LoginPage() {
         {/* Footer */}
         <div className="text-center mt-6 text-sm text-gray-600">
           Don't have an account?{" "}
-          <a
-            href="#"
-            className="text-blue-600 hover:underline font-medium"
-          >
+          <Link href="#" className="text-blue-600 hover:underline font-medium">
             Sign up
-          </a>
+          </Link>
         </div>
       </div>
     </div>

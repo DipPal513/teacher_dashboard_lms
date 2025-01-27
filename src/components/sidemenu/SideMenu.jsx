@@ -16,17 +16,18 @@ import {
   FaChartLine,
 } from "react-icons/fa";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default function SideMenu() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const router = useRouter();
+  const pathname = usePathname();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const isActive = (path) => router.asPath === path;
+  const isActive = (path) => pathname === path; // Fixed: Using `pathname`
+  console.log(pathname)
 
   return (
     <div className="relative h-screen">
@@ -52,56 +53,46 @@ export default function SideMenu() {
           collapsedWidth="80px"
           style={{ backgroundColor: "#fff !important", color: "#000" }}
         >
-          {/* Logo Section */}
-          <div className="logo p-5 text-center border-b border-gray-200">
-            <img
-              src="https://img.freepik.com/free-vector/bird-colorful-logo-gradient-vector_343694-1365.jpg"
-              alt="Logo"
-              className="max-w-full mx-auto h-20 rounded-md"
-            />
-          </div>
+          
 
           {/* Menu Items */}
           <Menu>
             <MenuItem
+              active={isActive("/dashboard/form")}
               icon={<FaWpforms className="text-pink-400" />}
               className={`text-black hover:text-blue-500 ${
-                isActive("/form") ? "bg-blue-200" : ""
+                isActive("/dashboard/form") ? "bg-blue-200" : ""
               }`}
             >
-              <Link href={"/form"}>Form</Link>
+              <Link href={"/dashboard/form"}>Form</Link>
             </MenuItem>
             <MenuItem
+              active={isActive("/dashboard/table")}
               icon={<FaTable className="text-orange-400" />}
               className={`text-black hover:text-blue-500 ${
-                isActive("/table") ? "bg-blue-100" : ""
+                isActive("/dashboard/table") ? "bg-blue-100" : ""
               }`}
             >
-              <Link href={"/table"}>Table</Link>
+              <Link href={"/dashboard/table"}>Table</Link>
             </MenuItem>
+           
             <MenuItem
-              icon={<FaSignInAlt className="text-purple-400" />}
-              className={`text-black hover:text-blue-500 ${
-                isActive("/login") ? "bg-blue-100" : ""
-              }`}
-            >
-              <Link href={"/login"}>Login</Link>
-            </MenuItem>
-            <MenuItem
+              active={isActive("/dashboard/profile")}
               icon={<FaUser className="text-cyan-400" />}
               className={`text-black hover:text-blue-500 ${
-                isActive("/profile") ? "bg-blue-100" : ""
+                isActive("/dashboard/profile") ? "bg-blue-100" : ""
               }`}
             >
-              <Link href={"/profile"}>Profile</Link>
+              <Link href={"/dashboard/profile"}>Profile</Link>
             </MenuItem>
             <MenuItem
+              active={isActive("/dashboard/category")}
               icon={<FaUser className="text-cyan-400" />}
               className={`text-black hover:text-blue-500 ${
-                isActive("/overview") ? "bg-blue-100" : ""
+                isActive("/dashboard/category") ? "bg-blue-100" : ""
               }`}
             >
-              <Link href={"/overview"}>Overview</Link>
+              <Link href={"/dashboard/category"}>Category</Link>
             </MenuItem>
             <SubMenu
               label="More"
@@ -109,13 +100,15 @@ export default function SideMenu() {
               className="text-black hover:text-blue-500"
             >
               <MenuItem
+                active={isActive("/dashboard/settings")}
                 className={`text-black hover:text-blue-500 ${
-                  isActive("/settings") ? "bg-blue-100" : ""
+                  isActive("/dashboard/settings") ? "bg-blue-100" : ""
                 }`}
               >
-                <Link href={"/settings"}>Settings</Link>
+                <Link href={"/dashboard/settings"}>Settings</Link>
               </MenuItem>
               <MenuItem
+                active={isActive("/notifications")}
                 className={`text-black hover:text-blue-500 ${
                   isActive("/notifications") ? "bg-blue-100" : ""
                 }`}
@@ -124,6 +117,7 @@ export default function SideMenu() {
               </MenuItem>
             </SubMenu>
             <MenuItem
+              active={isActive("/analytics")}
               icon={<FaChartPie className="text-red-400" />}
               className={`text-black hover:text-blue-500 ${
                 isActive("/analytics") ? "bg-blue-100" : ""
@@ -132,6 +126,7 @@ export default function SideMenu() {
               <Link href={"/analytics"}>Analytics</Link>
             </MenuItem>
             <MenuItem
+              active={isActive("/messages")}
               icon={<FaEnvelope className="text-blue-400" />}
               className={`text-black hover:text-blue-500 ${
                 isActive("/messages") ? "bg-blue-100" : ""
@@ -140,6 +135,7 @@ export default function SideMenu() {
               <Link href={"/messages"}>Messages</Link>
             </MenuItem>
             <MenuItem
+              active={isActive("/alerts")}
               icon={<FaBell className="text-yellow-400" />}
               className={`text-black hover:text-blue-500 ${
                 isActive("/alerts") ? "bg-blue-100" : ""
@@ -148,6 +144,7 @@ export default function SideMenu() {
               <Link href={"/alerts"}>Alerts</Link>
             </MenuItem>
             <MenuItem
+              active={isActive("/calendar")}
               icon={<FaCalendar className="text-green-400" />}
               className={`text-black hover:text-blue-500 ${
                 isActive("/calendar") ? "bg-blue-100" : ""
@@ -156,6 +153,7 @@ export default function SideMenu() {
               <Link href={"/calendar"}>Calendar</Link>
             </MenuItem>
             <MenuItem
+              active={isActive("/documents")}
               icon={<FaFileAlt className="text-gray-400" />}
               className={`text-black hover:text-blue-500 ${
                 isActive("/documents") ? "bg-blue-100" : ""
@@ -164,6 +162,7 @@ export default function SideMenu() {
               <Link href={"/documents"}>Documents</Link>
             </MenuItem>
             <MenuItem
+              active={isActive("/reports")}
               icon={<FaChartLine className="text-purple-400" />}
               className={`text-black hover:text-blue-500 ${
                 isActive("/reports") ? "bg-blue-100" : ""

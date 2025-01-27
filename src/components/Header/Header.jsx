@@ -3,8 +3,23 @@ import React from 'react';
 import { Menu, Dropdown, Avatar } from 'antd';
 import { FaUser, FaCog, FaSignOutAlt } from 'react-icons/fa';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 export default function Header() {
+    const router = useRouter();
+    const handleLogout = () => {
+        // Add your logout logic here
+        console.log('User logged out');
+        // Show a toast notification
+        toast.success('You have successfully logged out.');
+        // Delete the authentication cookie using js-cookie
+        Cookies.remove('token');
+        // Redirect to login page
+        router.push('/login');
+    };
+
     const menu = (
         <Menu>
             <Menu.Item key="user-info" disabled>
@@ -24,7 +39,7 @@ export default function Header() {
                 <Link href="/settings">Settings</Link>
             </Menu.Item>
             <Menu.Divider />
-            <Menu.Item key="3" icon={<FaSignOutAlt />} style={{ color: 'red' }}>
+            <Menu.Item key="3" icon={<FaSignOutAlt />} style={{ color: 'red' }} onClick={handleLogout}>
                 Logout
             </Menu.Item>
         </Menu>
