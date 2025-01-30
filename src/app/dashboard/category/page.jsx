@@ -1,55 +1,91 @@
 "use client";
-import React, { useState } from "react";
-import useFetch from "@/hook/useFetch";
-import { Button, Dropdown, Menu, Skeleton, Modal, message } from "antd";
-import Link from "next/link";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Button, Dropdown, Menu, Skeleton, Modal } from "antd";
+import Link from "next/link";
+import Cookies from "js-cookie";
+import { base_url } from "@/utils/URL";
+import toast from "react-hot-toast";
+import { FaArrowLeft, FaArrowRight, FaInfoCircle, FaSearch } from "react-icons/fa";
 
 export default function Page() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [page, setPage] = useState(1); // Current page
   const [pageSize, setPageSize] = useState(10); // Page size
   const [searchQuery, setSearchQuery] = useState(""); // Search query
+  const [searchInput, setSearchInput] = useState(""); // Temp search input
   const [isModalVisible, setIsModalVisible] = useState(false); // Modal visibility
   const [deleteId, setDeleteId] = useState(null); // ID of the category to delete
 
-  const { data, loading, error } = useFetch(
-    `/categories/category?page=${page}&limit=${pageSize}&search=${searchQuery}`
-  );
+  // Fetch data using Axios
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(
+        `${base_url}/categories/category?search=${searchQuery}&page=${page}&limit=${pageSize}`
+      );
+      setData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError("Failed to fetch data. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Ensure data is always an array
-  const tableData = Array.isArray(data?.data) ? data.data : [];
+  useEffect(() => {
+    fetchData();
+  }, [page, pageSize, searchQuery]);
 
-  // Handle search input change
+  // Handle search when the button is clicked
   const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
-    setPage(1); // Reset to first page on new search
+    setSearchQuery(e.target.value); // Update the search query to trigger fetch
+    setPage(1); // Reset to the first page
   };
 
   // Handle delete confirmation
   const confirmDelete = async () => {
     try {
-      await axios.delete(`/categories/${deleteId}`);
-      message.success("Category deleted successfully!");
+      const token = Cookies.get("token"); // Retrieve token from local storage
+      console.log("this is delete id: ", deleteId);
+      await axios.delete(`${base_url}/categories/${deleteId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success("Category deleted successfully!");
       setDeleteId(null); // Reset the delete ID
       setIsModalVisible(false); // Close modal
+      fetchData(); // Refresh data after deletion
     } catch (error) {
-      message.error("Failed to delete the category. Please try again.");
+      toast.error("Failed to delete the category. Please try again.");
+      console.log(error);
     }
   };
+
+  // Ensure data is always an array
+  const tableData = data?.data && Array.isArray(data.data) ? data?.data : [];
 
   return (
     <div className="p-4 bg-white w-full">
       {/* Header Section */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-4">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-3">
         <div>
-          <h2 className="text-lg font-semibold">Table Name</h2>
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={handleSearch}
-            className="mt-2 w-full md:w-72 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
+          {/* <h2 className="text-lg font-semibold">Categories</h2> */}
+          <div className="flex items-center">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchInput} // Use temporary input state
+              onChange={(e) => handleSearch} // Update temp state
+              className="mt-2 w-full md:w-72 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+           
+            
+          </div>
         </div>
         <div className="flex gap-4">
           <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
@@ -80,7 +116,7 @@ export default function Page() {
                 <th className="px-4 py-2 text-sm font-medium text-gray-700">
                   Tag
                 </th>
-                <th className="px-4 py-2 text-sm font-medium text-gray-700">
+                <th className="ps-5 py-2 text-sm font-medium text-gray-700">
                   Action
                 </th>
               </tr>
@@ -103,11 +139,11 @@ export default function Page() {
                     <td className="px-4 py-2 text-sm text-gray-800">
                       {item.tag}
                     </td>
-                    <td className="px-4 py-2 text-sm text-gray-800">
+                    <td className="px-3 py-2 text-sm text-gray-800">
                       <Dropdown
                         overlay={
                           <Menu>
-                            <Menu.Item key="1">
+                            <Menu.Item key="1" className="bg-blue-300">
                               <Link
                                 href={`/dashboard/category/update/${item?.id}`}
                               >
@@ -116,6 +152,7 @@ export default function Page() {
                             </Menu.Item>
                             <Menu.Item
                               key="2"
+                              className="bg-red-300"
                               onClick={() => {
                                 setDeleteId(item.id); // Set the ID to delete
                                 setIsModalVisible(true); // Show modal
@@ -126,7 +163,7 @@ export default function Page() {
                           </Menu>
                         }
                       >
-                        <Button>Options</Button>
+                        <Button><FaInfoCircle /></Button>
                       </Dropdown>
                     </td>
                   </tr>
@@ -147,38 +184,48 @@ export default function Page() {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-between items-center mt-4">
+   
+      <div className="flex justify-center items-center mt-4 space-x-2">
         <button
           onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
           disabled={page === 1}
-          className={`px-4 py-2 rounded-md ${
-            page === 1
-              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-blue-500 text-white hover:bg-blue-600"
+          className={`px-3 py-1 rounded-md ${
+        page === 1
+          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+          : "bg-blue-500 text-white hover:bg-blue-600"
           }`}
         >
-          Previous
+          <FaArrowLeft />
         </button>
-        <span className="text-gray-600">
-          Page {page} of {data?.totalPages || 1}
-        </span>
+        {Array.from({ length: data?.totalPages || 1 }, (_, index) => index + 1).map((pageNumber) => (
+          <button
+        key={pageNumber}
+        onClick={() => setPage(pageNumber)}
+        className={`px-3 py-1 rounded-md ${
+          page === pageNumber
+            ? "bg-blue-500 text-white"
+            : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+        }`}
+          >
+        {pageNumber}
+          </button>
+        ))}
         <button
           onClick={() =>
-            setPage((prev) =>
-              data?.totalPages && prev < data.totalPages ? prev + 1 : prev
-            )
+        setPage((prev) =>
+          data?.totalPages && prev < data.totalPages ? prev + 1 : prev
+        )
           }
           disabled={page >= (data?.totalPages || 1)}
-          className={`px-4 py-2 rounded-md ${
-            page >= (data?.totalPages || 1)
-              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-blue-500 text-white hover:bg-blue-600"
+          className={`px-3 py-1 rounded-md ${
+        page >= (data?.totalPages || 1)
+          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+          : "bg-blue-500 text-white hover:bg-blue-600"
           }`}
         >
-          Next
+          <FaArrowRight  />
         </button>
       </div>
-
       {/* Confirmation Modal */}
       <Modal
         title="Confirm Delete"

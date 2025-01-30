@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useForm } from "react-hook-form";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import axios from "axios";
 import Cookies from "js-cookie";
 import Link from "next/link";
@@ -61,7 +61,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br">
-      <Toaster position="top-right" reverseOrder={false} />
+      
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-6">

@@ -2,6 +2,7 @@ import {  Roboto } from "next/font/google";
 import "@/app/globals.css";
 import SideMenu from "@/components/sidemenu/SideMenu";
 import Header from "@/components/Header/Header";
+import { Toaster } from "react-hot-toast";
 
 
 const roboto = Roboto({
@@ -21,6 +22,7 @@ export default function RootLayout({ children }) {
         className={` ${roboto.variable} antialiased bg-gray-100`}
       >
         {/* Header */}
+        <Toaster position="top-right" reverseOrder={false} />
         <Header />
 
         <div className="flex lg:ml-[270px] order-1 h-screen">

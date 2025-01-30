@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 // This function can be marked `async` if using `await` inside
 export function middleware(request) {
   const authToken = request.cookies.get("token");
-  console.log("this is from middleware: ", authToken);
+console.log("middleware triggred");
   const loggedInUserNotAccessPaths =
     request.nextUrl.pathname === "/" ||
     request.nextUrl.pathname === "/login";

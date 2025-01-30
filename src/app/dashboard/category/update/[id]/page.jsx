@@ -1,30 +1,65 @@
 "use client";
-import React, { useEffect } from "react";
-import { Form, Input, Button, Row, Col } from "antd";
+import React, { useEffect, useState } from "react";
+import { Form, Input, Button, Row, Col, Skeleton } from "antd";
 import useFetch from "@/hook/useFetch";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { useParams, useRouter } from "next/navigation";
+import { base_url } from "@/utils/URL";
+import Cookies from "js-cookie";
 
 const UpdateCategoryPage = () => {
+  const { id } = useParams();
   const [form] = Form.useForm();
+  const router = useRouter();
+  const [submitting, setSubmitting] = useState(false);
 
   // Fetch category data using useFetch
-  const { data, loading, error } = useFetch("/categories/category?id=VxZM0Jzb7JGXrpdk");
+  const { data, loading, error } = useFetch(`/categories/category?id=${id}`);
 
+  console.log(data);
   // Populate form fields when data is loaded
   useEffect(() => {
     if (data) {
       form.setFieldsValue({
         categoryName: data.name || "",
-        categoryType: data.categoryType || "",
-        input1: data.input1 || "",
-        input2: data.input2 || "",
+        categoryType: "category" || "",
       });
     }
   }, [data, form]);
 
   // Handle form submission
   const onFinish = (values) => {
-    console.log("Success:", values);
-    // Add your update logic here (e.g., send a PUT request to update the category)
+    const { categoryName, categoryType } = values;
+    setSubmitting(true);
+    axios
+      .patch(
+        `${base_url}/categories/${id}`,
+        {
+          name: categoryName,
+          type: "category",
+          parent_id: null,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      )
+      .then((response) => {
+        
+        toast.success("Category updated successfully!");
+        console.log("Success:", response.data);
+        form.resetFields(); // Clear form fields after success
+        router.push("/dashboard/category");
+      })
+      .catch((error) => {
+        toast.error("Failed to update category.");
+        console.error("Error:", error);
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -36,7 +71,9 @@ const UpdateCategoryPage = () => {
       <h2 className="mb-4 text-lg font-semibold">Update Category</h2>
 
       {loading ? (
-        <div>Loading...</div>
+        <div>
+          <Skeleton active />
+        </div>
       ) : error ? (
         <div className="text-red-500">Error: {error}</div>
       ) : (
@@ -53,7 +90,10 @@ const UpdateCategoryPage = () => {
                 label="Category Name"
                 name="categoryName"
                 rules={[
-                  { required: true, message: "Please input the category name!" },
+                  {
+                    required: true,
+                    message: "Please input the category name!",
+                  },
                 ]}
               >
                 <Input />
@@ -64,39 +104,19 @@ const UpdateCategoryPage = () => {
                 label="Category Type"
                 name="categoryType"
                 rules={[
-                  { required: true, message: "Please input the category type!" },
+                  {
+                    required: true,
+                    message: "Please input the category type!",
+                  },
                 ]}
               >
                 <Input />
               </Form.Item>
             </Col>
           </Row>
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                label="Input 1"
-                name="input1"
-                rules={[
-                  { required: true, message: "Please input the first field!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="Input 2"
-                name="input2"
-                rules={[
-                  { required: true, message: "Please input the second field!" },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-          </Row>
+
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={submitting}>
               Update
             </Button>
           </Form.Item>
