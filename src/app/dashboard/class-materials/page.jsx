@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import axios from "axios";
 import {
   Button,
@@ -21,7 +21,6 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
- 
   const [pageSize, setPageSize] = useState(10);
   const [searchInput, setSearchInput] = useState("");
   const [courses, setCourses] = useState([]);
@@ -31,6 +30,7 @@ export default function Page() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const router = useRouter();
+
   const searchParams = useSearchParams();
 
   // Extract course_id and search from URL
@@ -94,29 +94,30 @@ export default function Page() {
   }, [selectedCourseId, searchInput, page]);
 
   // Extract course_name from URL
-useEffect(() => {
-  const courseNameFromURL = searchParams.get("course_name") || "";
+  useEffect(() => {
+    const courseNameFromURL = searchParams.get("course_name") || "";
 
-  if (courseNameFromURL) {
-    setSelectedCourseName(courseNameFromURL);
-  }
-}, [searchParams]);
-// Update URL with course_name when course is selected
-const handleSearchClick = (e) => {
-  e.preventDefault();
-  if (selectedCourseId) {
-    const selectedCourse = courses.find(course => course.id === selectedCourseId);
-    const courseName = selectedCourse?.title || "";
-    setSelectedCourseName(courseName);
-    const newQuery = new URLSearchParams(searchParams.toString());
-    newQuery.set("course_id", selectedCourseId);
-    newQuery.set("course_name", courseName);
-    router.push(`?${newQuery.toString()}`, { scroll: false });
-    setShowContent(true);
-  } else {
-    toast.error("Please select a course before searching.");
-  }
-};
+    if (courseNameFromURL) {
+      setSelectedCourseName(courseNameFromURL);
+    }
+  }, [searchParams]);
+
+  // Update URL with course_name when course is selected
+  const handleSearchClick = (e) => {
+    e.preventDefault();
+    if (selectedCourseId) {
+      const selectedCourse = courses.find(course => course.id === selectedCourseId);
+      const courseName = selectedCourse?.title || "";
+      setSelectedCourseName(courseName);
+      const newQuery = new URLSearchParams(searchParams.toString());
+      newQuery.set("course_id", selectedCourseId);
+      newQuery.set("course_name", courseName);
+      router.push(`?${newQuery.toString()}`, { scroll: false });
+      setShowContent(true);
+    } else {
+      toast.error("Please select a course before searching.");
+    }
+  };
 
   const handleSearchInputChange = (e) => {
     const newSearch = e.target.value;
@@ -305,4 +306,3 @@ const handleSearchClick = (e) => {
     </div>
   );
 }
-
