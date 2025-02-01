@@ -44,7 +44,7 @@ export default function AddCategoryPage() {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 bg-white shadow-sm">
       <h1 className="text-2xl font-bold mb-4">Add Category</h1>
       <form onSubmit={handleSubmit} className=" grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="col-span-1">

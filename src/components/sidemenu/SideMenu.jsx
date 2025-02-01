@@ -14,6 +14,7 @@ import {
   FaCalendar,
   FaFileAlt,
   FaChartLine,
+  FaBookOpen,
 } from "react-icons/fa";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -116,41 +117,16 @@ export default function SideMenu() {
                 <Link href={"/notifications"}>Notifications</Link>
               </MenuItem>
             </SubMenu>
-            <MenuItem
-              active={isActive("/analytics")}
-              icon={<FaChartPie className="text-red-400" />}
-              className={`text-black hover:text-blue-500 ${
-                isActive("/analytics") ? "bg-blue-100" : ""
-              }`}
-            >
-              <Link href={"/analytics"}>Analytics</Link>
-            </MenuItem>
-            <MenuItem
-              active={isActive("/messages")}
-              icon={<FaEnvelope className="text-blue-400" />}
-              className={`text-black hover:text-blue-500 ${
-                isActive("/messages") ? "bg-blue-100" : ""
-              }`}
-            >
-              <Link href={"/messages"}>Messages</Link>
-            </MenuItem>
-            <MenuItem
-              active={isActive("/alerts")}
-              icon={<FaBell className="text-yellow-400" />}
-              className={`text-black hover:text-blue-500 ${
-                isActive("/alerts") ? "bg-blue-100" : ""
-              }`}
-            >
-              <Link href={"/alerts"}>Alerts</Link>
-            </MenuItem>
+            
+           
             <MenuItem
               active={isActive("/calendar")}
-              icon={<FaCalendar className="text-green-400" />}
+              icon={<FaBookOpen className="text-green-400" />}
               className={`text-black hover:text-blue-500 ${
-                isActive("/calendar") ? "bg-blue-100" : ""
+                isActive("/dashboard/courses") ? "bg-blue-100" : ""
               }`}
             >
-              <Link href={"/calendar"}>Calendar</Link>
+              <Link href={"/dashboard/courses"}>Courses</Link>
             </MenuItem>
             <MenuItem
               active={isActive("/documents")}
