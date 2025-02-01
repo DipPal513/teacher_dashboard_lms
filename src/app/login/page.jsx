@@ -8,7 +8,7 @@ import Cookies from "js-cookie";
 import Link from "next/link";
 import { base_url } from "@/utils/URL";
 import { useRouter } from "next/navigation";
-
+import "@/app/globals.css";
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
