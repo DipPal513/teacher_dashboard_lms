@@ -23,3 +23,18 @@ ul.ant-dropdown-menu{
   
     background-color: #fff !important;
 }
+
+.ant-form-item-label >label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::after {
+    display: inline-block;
+    margin-inline-end: 4px;
+    color: #ff4d4f !important;
+    font-size: 14px;
+    font-family: SimSun, sans-serif;
+    line-height: 1;
+    content: "*" !important;
+    visibility: visible !important;
+}
+.ant-form-item-label >label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+   visibility: hidden !important;
+   display: none !important;
+}

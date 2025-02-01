@@ -83,7 +83,7 @@ export default function Page() {
       {/* Header Section */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-3">
         <div>
-          <h2 className="text-lg font-semibold">Courses</h2>
+          <h2 className=" text-3xl font-bold py-2">Courses</h2>
           <div className="flex items-center">
             <input
               type="text"
