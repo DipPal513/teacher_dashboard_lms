@@ -1,8 +1,12 @@
 import React from 'react'
-import LoginPage from '../login/page'
+
+
 
 export default function page() {
   return (
-    <div><LoginPage /></div>
+    <div>
+      <h1>Welcome to the Dashboard</h1>
+      <p>This is your beautifully creative dashboard page.</p>
+    </div>
   )
 }
