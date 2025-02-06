@@ -80,15 +80,18 @@ export default function Page() {
 
   return (
     <div className="p-4 bg-white w-full">
+      {/* suspense */}
       <Suspense fallback={<Skeleton active />}>
+
         <SearchComponent onSearch={handleSearch} />
+
       </Suspense>
 
       {selectedCourseId && (
         <>
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-3">
             <div>
-              <h2 className="text-3xl font-bold py-2">Materials</h2>
+              <h2 className="text-3xl font-bold py-2">Course Materials</h2>
               <input
                 type="text"
                 placeholder="Search..."
