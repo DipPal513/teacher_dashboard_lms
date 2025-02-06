@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -8,9 +8,10 @@ import Cookies from "js-cookie";
 import Link from "next/link";
 import { base_url } from "@/utils/URL";
 import { useRouter } from "next/navigation";
-
+import "@/app/globals.css";
 export default function LoginPage() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -19,10 +20,11 @@ export default function LoginPage() {
   } = useForm();
 
   const onSubmit = async (data) => {
+    setLoading(true);
     try {
       const response = await axios.post(base_url + "/clients/web/login", data, {
         headers: {
-          "Accept": "application/json",
+          Accept: "application/json",
           "Content-Type": "application/x-www-form-urlencoded",
         },
       });
@@ -32,21 +34,17 @@ export default function LoginPage() {
       // Handle success
       if (response.status === 200) {
         reset();
-        console.log(result)
+        console.log(result);
         Cookies.set("token", result.data.access_token, {
           expires: result.expires_in / 86400, // Convert seconds to days
         });
         toast.success("Login successful!");
-        router.push('/dashboard')
-
-        // Clear input fields using react-hook-form reset method
-        
-
-        // Optional: Redirect to another page
-        // window.location.href = "/dashboard";
+        setLoading(false);
+        router.push("/dashboard");
       }
     } catch (error) {
       reset();
+      setLoading(false);
       // Handle error
       if (error.response) {
         // Error from server
@@ -61,7 +59,6 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br">
-      
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-6">
@@ -84,7 +81,7 @@ export default function LoginPage() {
               htmlFor="email"
               className="block text-sm font-medium text-gray-700"
             >
-              email
+              Email
             </label>
             <input
               id="email"
@@ -126,8 +123,9 @@ export default function LoginPage() {
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled={loading}
           >
-            Login
+            {loading ? "Loading..." : "Login"}
           </button>
         </form>
 
