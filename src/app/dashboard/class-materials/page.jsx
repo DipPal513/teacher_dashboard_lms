@@ -80,6 +80,7 @@ export default function Page() {
 
   return (
     <div className="p-4 bg-white w-full">
+      {/* suspense */}
       <Suspense fallback={<Skeleton active />}>
         <SearchComponent onSearch={handleSearch} />
       </Suspense>
