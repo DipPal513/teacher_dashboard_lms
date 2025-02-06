@@ -9,6 +9,7 @@ import Link from "next/link";
 import { base_url } from "@/utils/URL";
 import { useRouter } from "next/navigation";
 import "@/app/globals.css";
+import { Spin } from "antd";
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -124,8 +125,9 @@ export default function LoginPage() {
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={loading}
+            
           >
-            {loading ? "Loading..." : "Login"}
+            {loading ? <Spin /> : "Login"}
           </button>
         </form>
 
