@@ -54,7 +54,7 @@ const UpdateCoursePage = () => {
   }, [data, form]);
 
   // Handle form submission
-  const onFinish = (courseData) => {
+  const onFinish = async (courseData) => {
     setSubmitting(true);
     const { ...rest } = courseData;
 
@@ -72,25 +72,22 @@ const UpdateCoursePage = () => {
     formData.append("link", courseData.link);
     formData.append("photo", null);
 
-    axios
-      .patch(`${base_url}/class-materials/${id}`, finalData, {
+    try {
+      await axios.patch(`${base_url}/class-materials/${id}`, finalData, {
         headers: {
           Authorization: `Bearer ${Cookies.get("token")}`,
           "Content-Type": "application/json",
         },
-      })
-      .then(() => {
-        toast.success("Course updated successfully!");
-        form.resetFields();
-        router.back();
-      })
-      .catch((error) => {
-        toast.error("Failed to update course.");
-        console.error("Error:", error);
-      })
-      .finally(() => {
-        setSubmitting(false);
       });
+      toast.success("Course updated successfully!");
+      form.resetFields();
+      router.back();
+    } catch (error) {
+      toast.error("Failed to update course.");
+      console.error("Error:", error);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -142,7 +139,7 @@ const UpdateCoursePage = () => {
               >
                 <Select placeholder="Select Status">
                   <Select.Option value="draft">Draft</Select.Option>
-                  <Select.Option value="completed">Completed</Select.Option>
+                 
                   <Select.Option value="published">Published</Select.Option>
                 </Select>
               </Form.Item>
