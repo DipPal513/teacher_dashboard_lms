@@ -73,11 +73,9 @@ export default function AddCoursePage() {
 
   return (
     <div className="container mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-3xl font-semibold mb-6 text-gray-800">
-        Add New Course
-      </h1>
+     <h1 className="text-2xl font-bold mb-4">Add New Course</h1>
 
-      {loading && <Skeleton active />}
+     
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -243,33 +241,37 @@ export default function AddCoursePage() {
           />
         </div>
         <div className="col-span-1">
-  <label className="block text-sm font-medium text-gray-700">
-    Category <span className="text-red-500">*</span>
-  </label>
-  <Controller
-    name="category_id"
-    control={control}
-    rules={{ required: "Please select a category!" }}
-    render={({ field }) => (
-      <Select {...field} placeholder="Select Category" className="mt-1 block w-full">
-        {categoriesLoading ? (
-          <Skeleton.Input active />
-        ) : (
-          categories?.data?.map((category) => (
-            <Select.Option key={category.id} value={category.id}>
-              {category.name}
-            </Select.Option>
-          ))
-        )}
-      </Select>
-    )}
-  />
-  {errors.category_id && (
-    <p className="text-red-500 text-sm mt-2">
-      {errors.category_id.message}
-    </p>
-  )}
-</div>
+          <label className="block text-sm font-medium text-gray-700">
+            Category <span className="text-red-500">*</span>
+          </label>
+          <Controller
+            name="category_id"
+            control={control}
+            rules={{ required: "Please select a category!" }}
+            render={({ field }) => (
+              <Select
+                {...field}
+                placeholder="Select Category"
+                className="mt-1 block w-full"
+              >
+                {categoriesLoading ? (
+                  <Skeleton.Input active />
+                ) : (
+                  categories?.data?.map((category) => (
+                    <Select.Option key={category.id} value={category.id}>
+                      {category.name}
+                    </Select.Option>
+                  ))
+                )}
+              </Select>
+            )}
+          />
+          {errors.category_id && (
+            <p className="text-red-500 text-sm mt-2">
+              {errors.category_id.message}
+            </p>
+          )}
+        </div>
 
         {/* Submit Button */}
         <div className="col-span-1 md:col-span-2">
@@ -280,8 +282,7 @@ export default function AddCoursePage() {
             loading={loading}
             disabled={loading}
           >
-            Add Course
-          </Button>
+            Add          </Button>
         </div>
       </form>
     </div>

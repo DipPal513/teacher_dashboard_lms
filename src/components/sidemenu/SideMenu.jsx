@@ -51,24 +51,7 @@ export default function SideMenu() {
         >
           {/* Menu Items */}
           <Menu>
-            <MenuItem
-              active={isActive("/dashboard/form")}
-              icon={<FaWpforms className="text-pink-400" />}
-              className={`text-black hover:text-blue-500 ${
-                isActive("/dashboard/form") ? "bg-blue-200" : ""
-              }`}
-            >
-              <Link href={"/dashboard/form"} onClick={toggleSidebar}>Form</Link>
-            </MenuItem>
-            <MenuItem
-              active={isActive("/dashboard/table")}
-              icon={<FaTable className="text-orange-400" />}
-              className={`text-black hover:text-blue-500 ${
-                isActive("/dashboard/table") ? "bg-blue-100" : ""
-              }`}
-            >
-              <Link href={"/dashboard/table"} onClick={toggleSidebar}>Table</Link>
-            </MenuItem>
+            
             <MenuItem
               active={isActive("/dashboard/profile")}
               icon={<FaUser className="text-cyan-400" />}
@@ -127,15 +110,7 @@ export default function SideMenu() {
             >
               <Link href={"/dashboard/class-materials"} onClick={toggleSidebar}>Class Materials</Link>
             </MenuItem>
-            <MenuItem
-              active={isActive("/reports")}
-              icon={<FaChartLine className="text-purple-400" />}
-              className={`text-black hover:text-blue-500 ${
-                isActive("/reports") ? "bg-blue-100" : ""
-              }`}
-            >
-              <Link href={"/reports"} onClick={toggleSidebar}>Reports</Link>
-            </MenuItem>
+         
           </Menu>
         </Sidebar>
       </div>

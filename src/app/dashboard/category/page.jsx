@@ -6,7 +6,8 @@ import Link from "next/link";
 import Cookies from "js-cookie";
 import { base_url } from "@/utils/URL";
 import toast from "react-hot-toast";
-import { FaArrowLeft, FaArrowRight, FaInfoCircle, FaSearch } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight, FaEdit, FaInfoCircle, FaSearch } from "react-icons/fa";
+import { IoTrashBin } from "react-icons/io5";
 
 export default function Page() {
   const [data, setData] = useState([]);
@@ -74,7 +75,7 @@ export default function Page() {
       {/* Header Section */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-3">
         <div>
-          <h2 className="text-lg font-semibold">Categories</h2>
+        <h1 className="text-2xl font-bold mb-4">Categories</h1>
           <div className="flex items-center">
             <input
               type="text"
@@ -143,24 +144,32 @@ export default function Page() {
                       <Dropdown
                         overlay={
                           <Menu>
-                            <Menu.Item key="1" className="bg-blue-300">
-                              <Link
-                                href={`/dashboard/category/update/${item?.id}`}
-                              >
-                                Update
-                              </Link>
-                            </Menu.Item>
-                            <Menu.Item
-                              key="2"
-                              className="bg-red-300"
-                              onClick={() => {
-                                setDeleteId(item.id); // Set the ID to delete
-                                setIsModalVisible(true); // Show modal
-                              }}
+                          <Menu.Item
+                            key="1"
+                            icon={<FaEdit />}
+                            className="hover:bg-gray-100"
+                          >
+                            <Link
+                              href={`/dashboard/category/update/${item?.id}`}
                             >
-                              Delete
-                            </Menu.Item>
-                          </Menu>
+                              Update
+                            </Link>
+                          </Menu.Item>
+                          <Menu.Item
+                            key="2"
+                            icon={<IoTrashBin />}
+                            style={{
+                              backgroundColor: "rgb(248 113 113)",
+                              color: "white",
+                            }} // Tailwind 'bg-red-400' alternative
+                            onClick={() => {
+                              setDeleteId(item.id);
+                              setIsModalVisible(true);
+                            }}
+                          >
+                            Delete
+                          </Menu.Item>
+                        </Menu>
                         }
                       >
                         <Button><FaInfoCircle /></Button>
