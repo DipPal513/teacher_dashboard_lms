@@ -76,7 +76,7 @@ export default function AddCategoryPage() {
             type="submit"
             className=" py-2 px-4 bg-blue-600 text-white font-semibold rounded-md"
           >
-            Add Category
+            Add
           </button>
         </div>
       </form>

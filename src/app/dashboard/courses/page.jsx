@@ -6,8 +6,8 @@ import Link from "next/link";
 import Cookies from "js-cookie";
 import { base_url } from "@/utils/URL";
 import toast from "react-hot-toast";
-import { FaArrowLeft, FaArrowRight, FaInfoCircle } from "react-icons/fa";
-
+import { FaEdit, FaInfoCircle } from "react-icons/fa";
+import { IoTrashBin } from "react-icons/io5";
 export default function Page() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -83,13 +83,13 @@ export default function Page() {
       {/* Header Section */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-3">
         <div>
-          <h2 className=" text-3xl font-bold py-2">Courses</h2>
+        <h1 className="text-2xl font-bold mb-4">Courses</h1>
           <div className="flex items-center">
             <input
               type="text"
               placeholder="Search..."
               value={searchInput} // Use temporary input state
-              onInput={handleSearch} // Update temp state
+              // Update temp state
               className="mt-2 w-full md:w-72 px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
@@ -104,7 +104,6 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Table Section */}
       <div className="overflow-x-auto">
         {loading ? (
           <div className="text-center py-4">
@@ -146,11 +145,16 @@ export default function Page() {
                     <td className=" py-2 text-sm text-gray-800">
                       {item.status}
                     </td>
-                    <td className="px-2 py-2 text-sm text-gray-800">
+                    <td className="px-2 py-2 relative text-sm text-gray-800">
                       <Dropdown
+                        trigger={["click"]}
                         overlay={
                           <Menu>
-                            <Menu.Item key="1" className="bg-blue-300">
+                            <Menu.Item
+                              key="1"
+                              icon={<FaEdit />}
+                              className="hover:bg-gray-100"
+                            >
                               <Link
                                 href={`/dashboard/courses/update/${item?.id}`}
                               >
@@ -159,10 +163,14 @@ export default function Page() {
                             </Menu.Item>
                             <Menu.Item
                               key="2"
-                              className="bg-red-300"
+                              icon={<IoTrashBin />}
+                              style={{
+                                backgroundColor: "rgb(248 113 113)",
+                                color: "white",
+                              }} // Tailwind 'bg-red-400' alternative
                               onClick={() => {
-                                setDeleteId(item.id); // Set the ID to delete
-                                setIsModalVisible(true); // Show modal
+                                setDeleteId(item.id);
+                                setIsModalVisible(true);
                               }}
                             >
                               Delete

@@ -72,9 +72,7 @@ export default function AddCoursePage() {
 
   return (
     <div className="container mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-3xl font-semibold mb-6 text-gray-800">
-        Add New Course Material
-      </h1>
+     <h1 className="text-2xl font-bold mb-4">Add New Course Material</h1>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -162,7 +160,7 @@ export default function AddCoursePage() {
             loading={loading}
             disabled={loading}
           >
-            Add Course
+            Add
           </Button>
         </div>
       </form>

@@ -1,8 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import { Skeleton, Dropdown, Menu, Button } from "antd";
-import { FaInfoCircle } from "react-icons/fa";
+import { FaEdit, FaInfoCircle } from "react-icons/fa";
 import Link from "next/link";
+import { IoTrashBin } from "react-icons/io5";
 
 export function MaterialTable({ data,onDeleteHandler }) {
      
@@ -52,22 +53,32 @@ export function MaterialTable({ data,onDeleteHandler }) {
                                 <Dropdown
                                     overlay={
                                         <Menu>
-                                            <Menu.Item key="1" className="bg-blue-300">
-                                                <Link
-                                                    href={`/dashboard/class-materials/update/${item?.id}`}
-                                                >
-                                                    Update
-                                                </Link>
-                                            </Menu.Item>
-                                            <Menu.Item
-                                                key="2"
-                                                className="bg-red-300"
-                                                onClick={() =>onDeleteHandler(item.id, true)
-                                                }
-                                            >
-                                                Delete
-                                            </Menu.Item>
-                                        </Menu>
+                                        <Menu.Item
+                                          key="1"
+                                          icon={<FaEdit />}
+                                          className="hover:bg-gray-100"
+                                        >
+                                          <Link
+                                            href={`/dashboard/class-materials/update/${item?.id}`}
+                                          >
+                                            Update
+                                          </Link>
+                                        </Menu.Item>
+                                        <Menu.Item
+                                          key="2"
+                                          icon={<IoTrashBin />}
+                                          style={{
+                                            backgroundColor: "rgb(248 113 113)",
+                                            color: "white",
+                                          }} // Tailwind 'bg-red-400' alternative
+                                          onClick={() => {
+                                            setDeleteId(item.id);
+                                            setIsModalVisible(true);
+                                          }}
+                                        >
+                                          Delete
+                                        </Menu.Item>
+                                      </Menu>
                                     }
                                 >
                                     <Button>

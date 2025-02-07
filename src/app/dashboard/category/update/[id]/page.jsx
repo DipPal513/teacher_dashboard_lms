@@ -68,7 +68,7 @@ const UpdateCategoryPage = () => {
 
   return (
     <div className="p-4 bg-white w-full">
-      <h2 className="mb-4 text-lg font-semibold">Update Category</h2>
+     <h1 className="text-2xl font-bold mb-4">Update Category</h1>
 
       {loading ? (
         <div>

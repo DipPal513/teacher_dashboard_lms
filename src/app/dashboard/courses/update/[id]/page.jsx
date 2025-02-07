@@ -255,7 +255,7 @@ const UpdateCoursePage = () => {
           </Row>
           <Form.Item>
             <Button type="primary" htmlType="submit" loading={submitting}>
-              Update Course
+              Update
             </Button>
           </Form.Item>
         </Form>
