@@ -18,7 +18,7 @@ const UpdateCoursePage = () => {
 
   // Fetch course data
   const { data, loading: courseLoading, error } = useFetch(`/courses/${id}`);
-
+  console.log("courseData: ", data);
   // Fetch categories
   useEffect(() => {
     axios
@@ -48,26 +48,25 @@ const UpdateCoursePage = () => {
         coordinator_number: data?.data?.coordinator_number || "",
         intro_video: data?.data?.intro_video || "",
         status: data?.data?.status || "draft",
-        category: data?.data?.category || null,
+        category_id: data?.data?.category_id || null,
         photo: null,
       });
     }
   }, [data, form]);
 
   // Handle form submission
-  const onFinish = (courseData) => {
+  const onFinish = async (courseData) => {
     setSubmitting(true);
     const { photo, ...rest } = courseData;
 
     const finalData = { ...rest, photo: null, subject_id: null };
-    console.log("finalData",finalData)
+    console.log("finalData", finalData);
 
     // Prepare form data
     const formData = new FormData();
     formData.append("subject_id", null);
     formData.append("title", courseData.title);
-    formData.append("status", courseData.status);
-
+    // formData.append("status", courseData.status);
     formData.append("description", courseData.description);
     formData.append("num_classes", courseData.num_classes);
     formData.append("num_exams", courseData.num_exams);
@@ -78,26 +77,37 @@ const UpdateCoursePage = () => {
     formData.append("category_id", courseData.category_id);
     formData.append("photo", null);
 
-  
-    axios
-      .patch(`${base_url}/courses/${id}`, finalData, {
+    try {
+      await axios.patch(`${base_url}/courses/${id}`, finalData, {
         headers: {
           Authorization: `Bearer ${Cookies.get("token")}`,
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
+          
         },
-      })
-      .then(() => {
-        toast.success("Course updated successfully!");
-        form.resetFields();
-        router.push("/dashboard/courses");
-      })
-      .catch((error) => {
-        toast.error("Failed to update course.");
-        console.error("Error:", error);
-      })
-      .finally(() => {
-        setSubmitting(false);
       });
+      if (courseData.status !== data?.data?.status) {
+        console.log("coursedata status: ",courseData.status, "old data status: ",data?.data?.status)
+        await axios.patch(
+          `${base_url}/courses/${id}/status`,
+          { status: courseData.status },
+          {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("token")}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      }
+
+      toast.success("Course updated successfully!");
+      form.resetFields();
+      router.push("/dashboard/courses");
+    } catch (error) {
+      toast.error("Failed to update course.");
+      console.error("Error:", error);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -106,7 +116,7 @@ const UpdateCoursePage = () => {
 
   return (
     <div className="p-4 bg-white w-full">
-      <h2 className="mb-4 text-lg font-semibold">Update Course</h2>
+      <h2 className="mb-4 text-lg font-bold">Update Course</h2>
 
       {courseLoading ? (
         <Skeleton active />
@@ -247,7 +257,6 @@ const UpdateCoursePage = () => {
               >
                 <Select placeholder="Select Status">
                   <Select.Option value="draft">Draft</Select.Option>
-                  <Select.Option value="completed">Completed</Select.Option>
                   <Select.Option value="published">Published</Select.Option>
                 </Select>
               </Form.Item>
