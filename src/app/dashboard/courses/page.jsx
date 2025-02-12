@@ -60,7 +60,7 @@ export default function Page() {
     try {
       const token = Cookies.get("token");
       console.log("this is delete id: ", deleteId);
-      await axios.delete(`${base_url}/categories/${deleteId}`, {
+      await axios.delete(`${base_url}/courses/${deleteId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
