@@ -64,33 +64,36 @@ export default function AddCoursePage() {
       const courseResponse = await axios.post(base_url + "/courses", requestData, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
+      console.log("course response of photo: ",photo)
       if (photo) {
+        console.log("course data, photo",photo)
         const formData = new FormData();
         formData.append("photo", photo);
 
-        await axios.post(`${base_url}/courses/${courseResponse.data.id}/photo`, formData, {
+        await axios.post(`${base_url}/courses/${courseResponse.data?.data?.id}/photo`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
+            "Accept": "multipart/form-data",
           },
         });
       }
 
       toast.success("Course added successfully");
       setLoading(false);
+      setPhoto(null);
+      formData.resetFields();
       router.push("/dashboard/courses");
       reset();
     } catch (error) {
       setLoading(false);
+      console.log("the error is: ", error);
       toast.error("Failed to add course");
     }
   };
 
   const handlePhotoChange = (info) => {
-    if (info.file.status === "done") {
-      setPhoto(info.file.originFileObj);
-    }
+    console.log("photo changing file...",info)
+    setPhoto(info.fileList[0].originFileObj);
   };
 
   return (

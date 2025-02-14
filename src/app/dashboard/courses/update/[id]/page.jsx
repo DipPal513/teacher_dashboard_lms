@@ -16,7 +16,7 @@ const UpdateCoursePage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [categories, setCategories] = useState([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
-  const [fileList, setFileList] = useState([]);
+  const [picture, setPicture] = useState(null);
 
   // Fetch course data
   const { data, loading: courseLoading, error } = useFetch(`/courses/${id}`);
@@ -87,9 +87,9 @@ const UpdateCoursePage = () => {
         },
       });
 
-      if (fileList.length > 0) {
+      if (picture) {
         const photoFormData = new FormData();
-        photoFormData.append("photo", fileList[0]);
+        photoFormData.append("photo", picture.fileList[0].originFileObj);
 
         await axios.post(`${base_url}/courses/${id}/photo`, photoFormData, {
           headers: {
@@ -128,8 +128,8 @@ const UpdateCoursePage = () => {
     console.error("Failed:", errorInfo);
   };
 
-  const handleUploadChange = ({ fileList }) => {
-    setFileList(fileList);
+  const handleUploadChange = (data) => {
+    setPicture(data);
   };
 
   return (
