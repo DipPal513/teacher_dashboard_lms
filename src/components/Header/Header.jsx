@@ -49,7 +49,7 @@ export default function Header() {
         <header className="bg-white z-50 text-black p-4 fixed top-0 left-0 w-full">
             <div className="max-w-screen-xl mx-auto px-2 flex items-center justify-end lg:justify-between">
                 <div className="lg:flex items-center hidden">
-                    <img src="https://img.freepik.com/free-vector/bird-colorful-logo-gradient-vector_343694-1365.jpg" alt="Logo" className="w-12 h-12 mr-2" />
+                    <img src="/mis-du.jpg" alt="Logo" className="w-full h-12 mr-2" />
                 </div>
                 <Dropdown overlay={menu} trigger={['click']} className=''>
                     <div className="flex items-center cursor-pointer">

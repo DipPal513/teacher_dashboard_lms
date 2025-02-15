@@ -52,7 +52,6 @@ const UpdateCoursePage = () => {
         intro_video: data?.data?.intro_video || "",
         status: data?.data?.status || "draft",
         category_id: data?.data?.category_id || null,
-        photo: null,
       });
     }
   }, [data, form]);
@@ -62,7 +61,7 @@ const UpdateCoursePage = () => {
     setSubmitting(true);
     const { photo, ...rest } = courseData;
 
-    const finalData = { ...rest, photo: null, subject_id: null };
+    const finalData = { ...rest, photo:data?.data?.photo, subject_id: null };
     console.log("finalData", finalData);
 
     // Prepare form data
@@ -77,17 +76,17 @@ const UpdateCoursePage = () => {
     formData.append("intro_video", courseData.intro_video || null);
     formData.append("status", courseData.status);
     formData.append("category_id", courseData.category_id);
-    formData.append("photo", null);
 
     try {
       await axios.patch(`${base_url}/courses/${id}`, finalData, {
         headers: {
           Authorization: `Bearer ${Cookies.get("token")}`,
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
       });
 
       if (picture) {
+        console.log("this is the picture that im getting: ", picture);
         const photoFormData = new FormData();
         photoFormData.append("photo", picture.fileList[0].originFileObj);
 
@@ -100,7 +99,12 @@ const UpdateCoursePage = () => {
       }
 
       if (courseData.status !== data?.data?.status) {
-        console.log("coursedata status: ", courseData.status, "old data status: ", data?.data?.status);
+        console.log(
+          "coursedata status: ",
+          courseData.status,
+          "old data status: ",
+          data?.data?.status
+        );
         await axios.patch(
           `${base_url}/courses/${id}/status`,
           { status: courseData.status },
@@ -129,6 +133,7 @@ const UpdateCoursePage = () => {
   };
 
   const handleUploadChange = (data) => {
+    console.log("handleupload change trigger: ", data);
     setPicture(data);
   };
 
@@ -283,7 +288,9 @@ const UpdateCoursePage = () => {
                 label="Photo"
                 name="photo"
                 valuePropName="fileList"
-                getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
+                getValueFromEvent={(e) =>
+                  Array.isArray(e) ? e : e && e.fileList
+                }
               >
                 <Upload
                   name="photo"
