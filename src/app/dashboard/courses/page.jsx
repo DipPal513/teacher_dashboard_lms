@@ -8,6 +8,8 @@ import { base_url } from "@/utils/URL";
 import toast from "react-hot-toast";
 import { FaEdit, FaInfoCircle } from "react-icons/fa";
 import { IoTrashBin } from "react-icons/io5";
+
+
 export default function Page() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -10,15 +10,25 @@ import { base_url } from "@/utils/URL";
 import { useRouter } from "next/navigation";
 import "@/app/globals.css";
 import { Spin } from "antd";
-export default function LoginPage() {
+
+function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState(null);
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
+
+  useEffect(() => {
+    const storedToken = Cookies.get("token");
+    if (storedToken) {
+      setToken(storedToken);
+      router.push("/");
+    }
+  }, [router]);
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -40,12 +50,12 @@ export default function LoginPage() {
           expires: result.expires_in / 86400, // Convert seconds to days
         });
         toast.success("Login successful!");
-        setLoading(false);
+        console.log("logged in");
         router.push("/dashboard");
+        setToken(Cookies.get("token"));
       }
     } catch (error) {
       reset();
-      setLoading(false);
       // Handle error
       if (error.response) {
         // Error from server
@@ -55,6 +65,8 @@ export default function LoginPage() {
         console.log(error);
         toast.error("Invalid Credentials try again.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -64,7 +76,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="text-center mb-6">
           <img
-            src="https://img.freepik.com/free-vector/bird-colorful-logo-gradient-vector_343694-1365.jpg"
+            src="/mis-du.jpg"
             alt="Logo"
             className="h-20 mx-auto rounded-full"
           />
@@ -125,7 +137,6 @@ export default function LoginPage() {
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={loading}
-            
           >
             {loading ? <Spin /> : "Login"}
           </button>
@@ -142,3 +153,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+export default LoginPage;
