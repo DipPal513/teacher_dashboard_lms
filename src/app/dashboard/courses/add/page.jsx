@@ -6,13 +6,16 @@ import Cookies from "js-cookie";
 import { base_url } from "@/utils/URL";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
-import { Layout, Input, Button, Skeleton, Select } from "antd";
+import { Layout, Input, Button, Skeleton, Select, Upload } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 
 export default function AddCoursePage() {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [categoriesLoading, setCategoriesLoading] = useState(false);
+  const [photo, setPhoto] = useState(null);
   const router = useRouter();
+
   // Fetch categories
   useEffect(() => {
     axios
@@ -29,6 +32,7 @@ export default function AddCoursePage() {
         setCategoriesLoading(false);
       });
   }, []);
+
   const {
     control,
     handleSubmit,
@@ -57,25 +61,44 @@ export default function AddCoursePage() {
         photo: null,
       };
 
-      await axios.post(base_url + "/courses", requestData, {
+      const courseResponse = await axios.post(base_url + "/courses", requestData, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log("course response of photo: ",photo)
+      if (photo) {
+        console.log("course data, photo",photo)
+        const formData = new FormData();
+        formData.append("photo", photo);
+
+        await axios.post(`${base_url}/courses/${courseResponse.data?.data?.id}/photo`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Accept": "multipart/form-data",
+          },
+        });
+      }
 
       toast.success("Course added successfully");
       setLoading(false);
+      setPhoto(null);
+      formData.resetFields();
       router.push("/dashboard/courses");
       reset();
     } catch (error) {
       setLoading(false);
+      console.log("the error is: ", error);
       toast.error("Failed to add course");
     }
   };
 
+  const handlePhotoChange = (info) => {
+    console.log("photo changing file...",info)
+    setPhoto(info.fileList[0].originFileObj);
+  };
+
   return (
     <div className="container mx-auto p-6 bg-white shadow-md rounded-lg">
-     <h1 className="text-2xl font-bold mb-4">Add New Course</h1>
-
-     
+      <h1 className="text-2xl font-bold mb-4">Add New Course</h1>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -240,6 +263,8 @@ export default function AddCoursePage() {
             )}
           />
         </div>
+
+        {/* Category */}
         <div className="col-span-1">
           <label className="block text-sm font-medium text-gray-700">
             Category <span className="text-red-500">*</span>
@@ -273,6 +298,25 @@ export default function AddCoursePage() {
           )}
         </div>
 
+        {/* Photo Upload */}
+        <div className="col-span-1">
+          <label className="block text-sm font-medium text-gray-700">
+            Photo <span className="text-red-500">*</span>
+          </label>
+          <Upload
+            name="photo"
+            listType="picture"
+            maxCount={1}
+            beforeUpload={() => false}
+            onChange={handlePhotoChange}
+          >
+            <Button icon={<UploadOutlined />}>Upload Photo</Button>
+          </Upload>
+          {errors.photo && (
+            <p className="text-red-500 text-sm mt-2">{errors.photo.message}</p>
+          )}
+        </div>
+
         {/* Submit Button */}
         <div className="col-span-1 md:col-span-2">
           <Button
@@ -282,7 +326,8 @@ export default function AddCoursePage() {
             loading={loading}
             disabled={loading}
           >
-            Add          </Button>
+            Add{" "}
+          </Button>
         </div>
       </form>
     </div>

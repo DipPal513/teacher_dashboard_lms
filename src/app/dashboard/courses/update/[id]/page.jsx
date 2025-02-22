@@ -1,12 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button, Row, Col, Skeleton, Select } from "antd";
+import { Form, Input, Button, Row, Col, Skeleton, Select, Upload } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { base_url } from "@/utils/URL";
 import Cookies from "js-cookie";
 import useFetch from "@/hook/useFetch";
+import { UploadOutlined } from "@ant-design/icons";
 
 const UpdateCoursePage = () => {
   const { id } = useParams();
@@ -15,10 +16,12 @@ const UpdateCoursePage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [categories, setCategories] = useState([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [picture, setPicture] = useState(null);
 
   // Fetch course data
   const { data, loading: courseLoading, error } = useFetch(`/courses/${id}`);
   console.log("courseData: ", data);
+
   // Fetch categories
   useEffect(() => {
     axios
@@ -49,7 +52,6 @@ const UpdateCoursePage = () => {
         intro_video: data?.data?.intro_video || "",
         status: data?.data?.status || "draft",
         category_id: data?.data?.category_id || null,
-        photo: null,
       });
     }
   }, [data, form]);
@@ -59,14 +61,13 @@ const UpdateCoursePage = () => {
     setSubmitting(true);
     const { photo, ...rest } = courseData;
 
-    const finalData = { ...rest, photo: null, subject_id: null };
+    const finalData = { ...rest, photo:data?.data?.photo, subject_id: null };
     console.log("finalData", finalData);
 
     // Prepare form data
     const formData = new FormData();
     formData.append("subject_id", null);
     formData.append("title", courseData.title);
-    // formData.append("status", courseData.status);
     formData.append("description", courseData.description);
     formData.append("num_classes", courseData.num_classes);
     formData.append("num_exams", courseData.num_exams);
@@ -75,18 +76,35 @@ const UpdateCoursePage = () => {
     formData.append("intro_video", courseData.intro_video || null);
     formData.append("status", courseData.status);
     formData.append("category_id", courseData.category_id);
-    formData.append("photo", null);
 
     try {
       await axios.patch(`${base_url}/courses/${id}`, finalData, {
         headers: {
           Authorization: `Bearer ${Cookies.get("token")}`,
-          "Content-Type": "application/json"
-          
+          "Content-Type": "application/json",
         },
       });
+
+      if (picture) {
+        console.log("this is the picture that im getting: ", picture);
+        const photoFormData = new FormData();
+        photoFormData.append("photo", picture.fileList[0].originFileObj);
+
+        await axios.post(`${base_url}/courses/${id}/photo`, photoFormData, {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
+
       if (courseData.status !== data?.data?.status) {
-        console.log("coursedata status: ",courseData.status, "old data status: ",data?.data?.status)
+        console.log(
+          "coursedata status: ",
+          courseData.status,
+          "old data status: ",
+          data?.data?.status
+        );
         await axios.patch(
           `${base_url}/courses/${id}/status`,
           { status: courseData.status },
@@ -112,6 +130,11 @@ const UpdateCoursePage = () => {
 
   const onFinishFailed = (errorInfo) => {
     console.error("Failed:", errorInfo);
+  };
+
+  const handleUploadChange = (data) => {
+    console.log("handleupload change trigger: ", data);
+    setPicture(data);
   };
 
   return (
@@ -233,7 +256,6 @@ const UpdateCoursePage = () => {
 
           <Row gutter={16}>
             <Col span={8}>
-              {" "}
               <Form.Item
                 label="Intro Video URL"
                 name="intro_video"
@@ -261,7 +283,28 @@ const UpdateCoursePage = () => {
                 </Select>
               </Form.Item>
             </Col>
+            <Col span={8}>
+              <Form.Item
+                label="Photo"
+                name="photo"
+                valuePropName="fileList"
+                getValueFromEvent={(e) =>
+                  Array.isArray(e) ? e : e && e.fileList
+                }
+              >
+                <Upload
+                  name="photo"
+                  listType="picture"
+                  maxCount={1}
+                  beforeUpload={() => false}
+                  onChange={handleUploadChange}
+                >
+                  <Button icon={<UploadOutlined />}>Upload Photo</Button>
+                </Upload>
+              </Form.Item>
+            </Col>
           </Row>
+
           <Form.Item>
             <Button type="primary" htmlType="submit" loading={submitting}>
               Update

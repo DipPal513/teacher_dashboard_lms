@@ -37,6 +37,7 @@ export default function Page() {
 
   // Extract course_id and search from URL
   useEffect(() => {
+    
     const courseIdFromURL = searchParams.get("course_id") || "";
     const searchFromURL = searchParams.get("title") || "";
 

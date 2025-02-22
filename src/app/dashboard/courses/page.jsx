@@ -8,6 +8,8 @@ import { base_url } from "@/utils/URL";
 import toast from "react-hot-toast";
 import { FaEdit, FaInfoCircle } from "react-icons/fa";
 import { IoTrashBin } from "react-icons/io5";
+
+
 export default function Page() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -60,7 +62,7 @@ export default function Page() {
     try {
       const token = Cookies.get("token");
       console.log("this is delete id: ", deleteId);
-      await axios.delete(`${base_url}/categories/${deleteId}`, {
+      await axios.delete(`${base_url}/courses/${deleteId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -117,6 +119,9 @@ export default function Page() {
                   Course Name
                 </th>
                 <th className="px-4 py-2 text-sm font-medium text-gray-700">
+                  Course Photo
+                </th>
+                <th className="px-4 py-2 text-sm font-medium text-gray-700">
                   Course Type
                 </th>
                 <th className="px-4 py-2 text-sm font-medium text-gray-700">
@@ -138,6 +143,9 @@ export default function Page() {
                   >
                     <td className="px-4 py-2 text-sm text-gray-800">
                       {item.title}
+                    </td>
+                    <td className=" py-2 text-sm text-gray-800">
+                      <img src={item?.photo} height={100} width={100} alt="course photo" />
                     </td>
                     <td className=" py-2 text-sm text-gray-800">
                       {item.coordinator_name}
